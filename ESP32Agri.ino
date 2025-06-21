@@ -1,5 +1,6 @@
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
+#include <LittleFS.h>
 #include "password.h"
 
 AsyncWebServer server(80);
@@ -17,6 +18,13 @@ void setup() {
   pinMode(moistpin, OUTPUT);
   Serial.begin(115200);  // monitor display
 
+  // Initialize LittleFS
+  if(!LittleFS.begin(true)){
+    Serial.println("LittleFS Mount Failed");
+    return;
+  }
+  Serial.println("LittleFS mounted successfully");
+
   // http server initialize
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -28,8 +36,10 @@ void setup() {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    String textColor = (analogValue <= 3500) ? "blue" : "red";
+  server.serveStatic("/", LittleFS, "/");
+
+  server.on("/status", HTTP_GET, [](AsyncWebServerRequest *request){
+    String textColor = (analogValue <= 3400) ? "blue" : "red";
     String html = "<!DOCTYPE html><html><head><title>ESP32 Async Web Server</title>";
     html += "<meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">";
     html += "<style>body{font-family: Arial, sans-serif; text-align: center;} h1{color: #333;} p{font-size: 1.3em;}</style>";
@@ -37,6 +47,7 @@ void setup() {
     html += "<h1>Hello from ESP32!</h1>";
     html += "<p>Since ESP32 started: " + String(millis() / 1000) + " [sec]</p>";
     html += "<p>Soil Moisture: <span style=\"color: " + textColor + ";\">" + String(analogValue) + "</span></p>";
+    html += "<img src=\"good_pot.png\" alt=\"Good Pot\" style=\"max-width: 100px; height: auto;\">";
     html += "</body></html>";
     request->send(200, "text/html", html);
   });
@@ -50,12 +61,12 @@ void setup() {
 }
 
 void toggleLED(int analogValue) {
-  if (analogValue > 3500 && blinkStat == false) {
+  if (analogValue > 3400 && blinkStat == false) {
     digitalWrite(drypin, HIGH);
     blinkStat = true;
     digitalWrite(moistpin, LOW);
 
-  } else if (analogValue > 3500 && blinkStat == true) {
+  } else if (analogValue > 3400 && blinkStat == true) {
     digitalWrite(drypin, LOW);
     blinkStat = false;
     digitalWrite(moistpin, LOW);
