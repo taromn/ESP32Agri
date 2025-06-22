@@ -1,4 +1,4 @@
-Visualize soil moisture using ESP32
+*Visualize soil moisture using ESP32*
 
 
 ![ESP32Agri1](https://github.com/user-attachments/assets/cb749c82-d3e8-4a84-b86b-1cb02b2249ce)
@@ -13,6 +13,8 @@ password.h
 const char* ssid = "YOUR_SSID";
 const char* password = "WIFI_PASSWORD";
 ```
+
+Do not include `password.h` in your commit. (basically, `password.h` should be ignored by .gitignore)
 
 **2/ upload the 'data' directory to your ESP32.**
 
