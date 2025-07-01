@@ -1,0 +1,11 @@
+global:
+  external_labels:
+    monitor: 'agri-monitor'  # label for external services
+
+scrape_configs:
+  - job_name: 'esp32'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['<ip_address>:80']
+        labels:
+          group: 'dev'
