@@ -52,6 +52,16 @@ void setup() {
     request->send(200, "text/html", html);
   });
 
+  server.on("/metrics", HTTP_GET, [](AsyncWebServerRequest *request){
+    String metrics = "# HELP moisture_raw Soil moisture value (0-4095)\n";
+    metrics += "# TYPE moisture_raw gauge\n";
+    metrics += "moisture_raw " + String(analogValue) + "\n";
+    metrics += "# HELP uptime_seconds ESP32 uptime in seconds\n";
+    metrics += "# TYPE uptime_seconds counter\n";
+    metrics += "uptime_seconds " + String(millis() / 1000) + "\n";
+    request->send(200, "text/plain", metrics);
+  });
+
   server.onNotFound([](AsyncWebServerRequest *request){
     request->send(404, "text/plain", "404: Not found");
   });
