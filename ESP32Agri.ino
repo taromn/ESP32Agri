@@ -5,9 +5,10 @@
 
 AsyncWebServer server(80);
 
-const int analogPin = 32;
-const int drypin = 25;
-const int moistpin = 26;
+// if needed, change these pins to your own pin numbers
+const int analogPin = 32;  // sensor pin
+const int drypin = 25;  // LED pin that blinks when soil is dry
+const int moistpin = 26;  // LED pin that blinks when soil is moist
 
 int blinkStat = false;
 int analogValue = 0;
