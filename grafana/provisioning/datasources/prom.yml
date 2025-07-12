@@ -1,0 +1,10 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: "http://agri-prom:9090"
+    isDefault: true
+
+# https://github.com/grafana/grafana/blob/main/conf/provisioning/datasources/sample.yaml
